@@ -1,0 +1,869 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Physics Mock Test: Electrostatics</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* Apply Inter font to the whole page */
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        /* Custom scrollbar for aesthetics */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f1f5f9; /* gray-100 */
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #94a3b8; /* gray-400 */
+            border-radius: 10px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #64748b; /* gray-500 */
+        }
+        /* Style for the custom radio button label when checked */
+        input[type="radio"]:checked + label {
+            background-color: #e0f2fe; /* sky-100 */
+            border-color: #0ea5e9; /* sky-500 */
+            font-weight: 600;
+            color: #0369a1; /* sky-700 */
+        }
+    </style>
+</head>
+<body class="bg-gray-100 flex items-center justify-center min-h-screen p-4">
+
+    <div id="app" class="bg-white p-6 md:p-8 rounded-2xl shadow-xl w-full max-w-3xl mx-auto">
+
+        <div id="start-screen" class="text-center">
+            <h1 class="text-3xl font-bold text-gray-800 mb-4">Physics Mock Test</h1>
+            <p class="text-lg text-gray-600 mb-6">Chapters: Electrostatics, Capacitance & Gauss's Law</p>
+            <div class="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6 text-left">
+                <h2 class="text-xl font-semibold text-blue-800 mb-2">Test Instructions</h2>
+                <ul class="list-disc list-inside text-gray-700 space-y-1">
+                    <li>Total Questions: <strong>50</strong></li>
+                    <li>Time Limit: <strong>60 Minutes</strong></li>
+                    <li>Correct Answer: <strong>+1 Mark</strong></li>
+                    <li>Incorrect Answer: <strong>-0.25 Marks</strong></li>
+                    <li>Unanswered: <strong>0 Marks</strong></li>
+                    <li>Click "Submit Test" when you are finished.</li>
+                </ul>
+            </div>
+            <button id="start-btn" class="w-full bg-blue-600 text-white font-bold py-3 px-6 rounded-lg hover:bg-blue-700 transition-all duration-300 text-lg shadow-md">
+                Start Test
+            </button>
+        </div>
+
+        <div id="test-screen" class="hidden">
+            <div class="flex justify-between items-center mb-6 sticky top-0 bg-white pt-2 pb-4 border-b">
+                <h1 class="text-2xl font-bold text-gray-800">Physics Test</h1>
+                <div id="timer" class="font-mono text-2xl font-bold bg-gray-100 text-gray-800 py-2 px-4 rounded-lg shadow-inner">
+                    60:00
+                </div>
+            </div>
+
+            <div id="questions-container" class="space-y-8 max-h-[75vh] overflow-y-auto pr-2">
+                </div>
+
+            </div>
+
+        <div id="results-screen" class="hidden">
+            <h1 class="text-3xl font-bold text-gray-800 mb-4 text-center">Test Results</h1>
+            
+            <div id="score-summary" class="bg-gray-50 rounded-lg p-6 mb-6 text-center shadow-md">
+                </div>
+
+            <h2 class="text-2xl font-semibold text-gray-700 mb-4">Detailed Breakdown</h2>
+            <div id="results-details" class="space-y-4 max-h-[50vh] overflow-y-auto pr-2">
+                </div>
+            
+            <div class="mt-8">
+                <button id="restart-btn" class="w-full bg-blue-600 text-white font-bold py-3 px-6 rounded-lg hover:bg-blue-700 transition-all duration-300 text-lg shadow-md">
+                    Take Test Again
+                </button>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        // --- 1. DATA: All 50 Questions ---
+        const questions = [
+            // 1. Electric Charge & Coulomb's Law
+            {
+                q: "1. The S.I. unit of electric charge is:",
+                options: [
+                    "(a) Volt (V)",
+                    "(b) Newton (N)",
+                    "(c) Faraday (F)",
+                    "(d) Coulomb (C)"
+                ],
+                answer: 3
+            },
+            {
+                q: "2. When a glass rod is rubbed with a silk cloth, the glass rod acquires a positive charge because:",
+                options: [
+                    "(a) Protons are added to it",
+                    "(b) Protons are removed from it",
+                    "(c) Electrons are added to it",
+                    "(d) Electrons are removed from it"
+                ],
+                answer: 3
+            },
+            {
+                q: "3. Two point charges, $+q$ and $+q$, are separated by a distance $r$. The force between them is $F$. If one charge is doubled and the distance between them is also doubled, the new force will be:",
+                options: [
+                    "(a) $F$",
+                    "(b) $F/2$",
+                    "(c) $F/4$",
+                    "(d) $2F$"
+                ],
+                answer: 1
+            },
+            {
+                q: "4. Two charges placed in air repel each other with a force $F$. If they are immersed in a medium with a dielectric constant $K=80$, the new force will be:",
+                options: [
+                    "(a) $80F$",
+                    "(b) $F$",
+                    "(c) $F/80$",
+                    "(d) $F/40$"
+                ],
+                answer: 2
+            },
+            {
+                q: "5. The principle of quantization of charge states that:",
+                options: [
+                    "(a) Charge is a vector quantity",
+                    "(b) Charge is a scalar quantity",
+                    "(c) Any charge is an integral multiple of the charge of an electron",
+                    "(d) Charge can be created and destroyed"
+                ],
+                answer: 2
+            },
+            {
+                q: "6. Two charges $+Q$ and $+4Q$ are separated by a distance $d$. A third charge $q$ is placed in equilibrium between them. The distance of $q$ from $+Q$ is:",
+                options: [
+                    "(a) $d/2$",
+                    "(b) $d/3$",
+                    "(c) $d/4$",
+                    "(d) $2d/3$"
+                ],
+                answer: 1
+            },
+            // 2. Electric Field
+            {
+                q: "7. The S.I. unit of electric field intensity is:",
+                options: [
+                    "(a) N/C",
+                    "(b) V/m",
+                    "(c) J/(C·m)",
+                    "(d) Both (a) and (b)"
+                ],
+                answer: 3
+            },
+            {
+                q: "8. Which of the following statements about electric field lines is incorrect?",
+                options: [
+                    "(a) They start from a positive charge and end on a negative charge.",
+                    "(b) They form closed loops.",
+                    "(c) Two field lines can never intersect.",
+                    "(d) They are always perpendicular to the surface of a conductor."
+                ],
+                answer: 1
+            },
+            {
+                q: "9. The electric field at a distance $r$ from a point charge $Q$ is $E$. The electric field at a distance $2r$ from a charge $2Q$ will be:",
+                options: [
+                    "(a) $E$",
+                    "(b) $2E$",
+                    "(c) $E/2$",
+                    "(d) $E/4$"
+                ],
+                answer: 2
+            },
+            {
+                q: "10. An electron (mass $m$, charge $-e$) is placed in a uniform electric field $E$. The acceleration of the electron is:",
+                options: [
+                    "(a) $eE/m$",
+                    "(b) $mE/e$",
+                    "(c) $E/m$",
+                    "(d) $e/m$"
+                ],
+                answer: 0
+            },
+            {
+                q: "11. A hollow metal sphere of radius $5 \\text{ cm}$ is charged such that the potential on its surface is $10 \\text{ V}$. The electric field inside the sphere at a distance of $2 \\text{ cm}$ from the center is:",
+                options: [
+                    "(a) $10 \\text{ V/m}$",
+                    "(b) $5 \\text{ V/m}$",
+                    "(c) $2 \\text{ V/m}$",
+                    "(d) Zero"
+                ],
+                answer: 3
+            },
+            // 3. Electric Dipole
+            {
+                q: "12. The S.I. unit of electric dipole moment is:",
+                options: [
+                    "(a) C/m",
+                    "(b) C·m",
+                    "(c) C/m²",
+                    "(d) C·m²"
+                ],
+                answer: 1
+            },
+            {
+                q: "13. An electric dipole consists of two opposite charges, each of magnitude $1 \\mu C$, separated by $2 \\text{ cm}$. The magnitude of the electric dipole moment is:",
+                options: [
+                    "(a) $2 \\times 10^{-8} \\text{ C·m}$",
+                    "(b) $1 \\times 10^{-6} \\text{ C·m}$",
+                    "(c) $0.5 \\times 10^{-8} \\text{ C·m}$",
+                    "(d) $2 \\times 10^{-6} \\text{ C·m}$"
+                ],
+                answer: 0
+            },
+            {
+                q: "14. The electric field at a point on the axial line of a short dipole is $E_1$. The electric field at a point on the equatorial line at the same distance is $E_2$. The relation between them is:",
+                options: [
+                    "(a) $E_1 = E_2$",
+                    "(b) $E_1 = 2E_2$",
+                    "(c) $E_2 = 2E_1$",
+                    "(d) $E_1 = 4E_2$"
+                ],
+                answer: 1
+            },
+            {
+                q: "15. An electric dipole is placed in a uniform external electric field $\\vec{E}$. The torque ($\\vec{\\tau}$) acting on the dipole ($\\vec{p}$) is:",
+                options: [
+                    "(a) $\\vec{\\tau} = \\vec{p} \\cdot \\vec{E}$",
+                    "(b) $\\vec{\\tau} = \\vec{p} \\times \\vec{E}$",
+                    "(c) $\\vec{\\tau} = pE \\sin\\theta \\hat{n}$ (where $\\hat{n}$ is perpendicular to both)",
+                    "(d) Both (b) and (c)"
+                ],
+                answer: 3 // Both b and c are valid representations of the cross product
+            },
+            {
+                q: "16. An electric dipole placed in a uniform electric field experiences a maximum torque when the angle between the dipole moment and the electric field is:",
+                options: [
+                    "(a) $0^{\\circ}$",
+                    "(b) $45^{\\circ}$",
+                    "(c) $90^{\\circ}$",
+                    "(d) $180^{\\circ}$"
+                ],
+                answer: 2
+            },
+            {
+                q: "17. The net force on an electric dipole placed in a uniform electric field is:",
+                options: [
+                    "(a) Always zero",
+                    "(b) Never zero",
+                    "(c) Depends on the orientation",
+                    "(d) Depends on the dipole moment"
+                ],
+                answer: 0
+            },
+            // 4. Electric Flux & Gauss's Law
+            {
+                q: "18. The S.I. unit of electric flux is:",
+                options: [
+                    "(a) V·m",
+                    "(b) N·C/m²",
+                    "(c) V/m",
+                    "(d) N/C"
+                ],
+                answer: 0
+            },
+            {
+                q: "19. A charge $Q$ is enclosed by a Gaussian spherical surface of radius $R$. If the radius of the sphere is doubled, the outward electric flux will:",
+                options: [
+                    "(a) Be doubled",
+                    "(b) Be halved",
+                    "(c) Increase four times",
+                    "(d) Remain the same"
+                ],
+                answer: 3
+            },
+            {
+                q: "20. According to Gauss's Law, the total electric flux through a closed surface is:",
+                options: [
+                    "(a) Zero",
+                    "(b) $1/\\epsilon_0$ times the net charge enclosed",
+                    "(c) $\\epsilon_0$ times the net charge enclosed",
+                    "(d) Equal to the surface charge density"
+                ],
+                answer: 1
+            },
+            {
+                q: "21. The electric field due to an infinitely long, straight, uniformly charged wire at a distance $r$ is proportional to:",
+                options: [
+                    "(a) $r$",
+                    "(b) $1/r$",
+                    "(c) $1/r^2$",
+                    "(d) $r^2$"
+                ],
+                answer: 1
+            },
+            {
+                q: "22. An electric dipole is placed inside a closed cube. The total electric flux emerging from the cube is:",
+                options: [
+                    "(a) $q/\\epsilon_0$",
+                    "(b) $-q/\\epsilon_0$",
+                    "(c) $2q/\\epsilon_0$",
+                    "(d) Zero"
+                ],
+                answer: 3
+            },
+            {
+                q: "23. The electric field just outside the surface of a charged conductor with surface charge density $\\sigma$ is:",
+                options: [
+                    "(a) $\\sigma / \\epsilon_0$",
+                    "(b) $\\sigma / 2\\epsilon_0$",
+                    "(c) $2\\sigma / \\epsilon_0$",
+                    "(d) Zero"
+                ],
+                answer: 0
+            },
+            // 5. Electric Potential & Potential Energy
+            {
+                q: "24. The work done in moving a $2 \\text{ C}$ charge from a point with potential $10 \\text{ V}$ to a point with potential $25 \\text{ V}$ is:",
+                options: [
+                    "(a) $15 \\text{ J}$",
+                    "(b) $50 \\text{ J}$",
+                    "(c) $30 \\text{ J}$",
+                    "(d) $2.5 \\text{ J}$"
+                ],
+                answer: 2
+            },
+            {
+                q: "25. The electric potential inside a hollow conducting sphere is:",
+                options: [
+                    "(a) Zero",
+                    "(b) Proportional to the distance from the center",
+                    "(c) Constant and equal to the potential on the surface",
+                    "(d) Proportional to $1/r$"
+                ],
+                answer: 2
+            },
+            {
+                q: "26. The relationship between electric field $E$ and electric potential $V$ is:",
+                options: [
+                    "(a) $E = dV/dr$",
+                    "(b) $E = -dV/dr$",
+                    "(c) $V = dE/dr$",
+                    "(d) $V = -dE/dr$"
+                ],
+                answer: 1
+            },
+            {
+                q: "27. An equipotential surface is one where:",
+                options: [
+                    "(a) The electric field is zero",
+                    "(b) The electric potential is zero",
+                    "(c) The electric potential is constant",
+                    "(d) The electric field is constant"
+                ],
+                answer: 2
+            },
+            {
+                q: "28. The work done in moving a charge $q$ along an equipotential surface is:",
+                options: [
+                    "(a) $qV$",
+                    "(b) $V/q$",
+                    "(c) Infinite",
+                    "(d) Zero"
+                ],
+                answer: 3
+            },
+            {
+                q: "29. The angle between an electric field line and an equipotential surface is always:",
+                options: [
+                    "(a) $0^{\\circ}$",
+                    "(b) $45^{\\circ}$",
+                    "(c) $90^{\\circ}$",
+                    "(d) $180^{\\circ}$"
+                ],
+                answer: 2
+            },
+            {
+                q: "30. The electric potential at a point on the equatorial line of an electric dipole is:",
+                options: [
+                    "(a) $k \\cdot p/r^2$",
+                    "(b) $k \\cdot p/r$",
+                    "(c) $2 \\cdot k \\cdot p/r^2$",
+                    "(d) Zero"
+                ],
+                answer: 3
+            },
+            {
+                q: "31. The potential energy of a system of two charges $q_1$ and $q_2$ separated by a distance $r$ is:",
+                options: [
+                    "(a) $k(q_1 q_2)/r^2$",
+                    "(b) $k(q_1 q_2)/r$",
+                    "(c) $k(q_1 + q_2)/r$",
+                    "(d) $k(q_1 q_2)^2/r$"
+                ],
+                answer: 1
+            },
+            // 6. Capacitors & Capacitance
+            {
+                q: "32. The S.I. unit of capacitance is:",
+                options: [
+                    "(a) Volt (V)",
+                    "(b) Coulomb (C)",
+                    "(c) Farad (F)",
+                    "(d) Henry (H)"
+                ],
+                answer: 2
+            },
+            {
+                q: "33. The capacitance of a parallel plate capacitor is $C$. If the distance between the plates is halved and the area of the plates is doubled, the new capacitance will be:",
+                options: [
+                    "(a) $C/2$",
+                    "(b) $C$",
+                    "(c) $2C$",
+                    "(d) $4C$"
+                ],
+                answer: 3
+            },
+            {
+                q: "34. A parallel plate capacitor is charged by a battery. After charging, the battery is disconnected, and a dielectric slab is inserted between the plates. The potential difference across the plates will:",
+                options: [
+                    "(a) Increase",
+                    "(b) Decrease",
+                    "(c) Remain the same",
+                    "(d) Become zero"
+                ],
+                answer: 1
+            },
+            {
+                q: "35. A parallel plate capacitor is connected to a battery. A dielectric slab is inserted between the plates. The charge on the plates will:",
+                options: [
+                    "(a) Increase",
+                    "(b) Decrease",
+                    "(c) Remain the same",
+                    "(d) Become zero"
+                ],
+                answer: 0
+            },
+            {
+                q: "36. The energy $U$ stored in a capacitor of capacitance $C$ charged to a potential $V$ is given by:",
+                options: [
+                    "(a) $U = (1/2)CV^2$",
+                    "(b) $U = (1/2)Q^2/C$",
+                    "(c) $U = (1/2)QV$",
+                    "(d) All of the above"
+                ],
+                answer: 3
+            },
+            {
+                q: "37. Three capacitors, each of capacitance $C$, are connected in series. The equivalent capacitance will be:",
+                options: [
+                    "(a) $3C$",
+                    "(b) $C/3$",
+                    "(c) $C$",
+                    "(d) $1/(3C)$"
+                ],
+                answer: 1
+            },
+            {
+                q: "38. Three capacitors of $2 \\mu F$, $3 \\mu F$, and $6 \\mu F$ are connected in series. The equivalent capacitance is:",
+                options: [
+                    "(a) $1 \\mu F$",
+                    "(b) $11 \\mu F$",
+                    "(c) $0.5 \\mu F$",
+                    "(d) $1/11 \\mu F$"
+                ],
+                answer: 0
+            },
+            {
+                q: "39. Two capacitors of capacitance $C$ are connected in parallel. The equivalent capacitance is:",
+                options: [
+                    "(a) $C$",
+                    "(b) $2C$",
+                    "(c) $C/2$",
+                    "(d) $C^2$"
+                ],
+                answer: 1
+            },
+            {
+                q: "40. A $10 \\mu F$ capacitor is charged to $100 \\text{ V}$. The energy stored in it is:",
+                options: [
+                    "(a) $0.05 \\text{ J}$",
+                    "(b) $0.5 \\text{ J}$",
+                    "(c) $5 \\text{ J}$",
+                    "(d) $50 \\text{ J}$"
+                ],
+                answer: 0
+            },
+            // 7. Conductors & Dielectrics
+            {
+                q: "41. In a region of space, the electric potential is found to be $5 \\text{ V}$ throughout. The magnitude of the electric field in this region is:",
+                options: [
+                    "(a) $0 \\text{ N/C}$",
+                    "(b) $1 \\text{ N/C}$",
+                    "(c) $5 \\text{ N/C}$",
+                    "(d) $0.5 \\text{ N/C}$"
+                ],
+                answer: 0
+            },
+            {
+                q: "42. Materials that allow electric charge to flow freely through them are called:",
+                options: [
+                    "(a) Insulators",
+                    "(b) Conductors",
+                    "(c) Semiconductors",
+                    "(d) Dielectrics"
+                ],
+                answer: 1
+            },
+            {
+                q: "43. The phenomenon of an uncharged body getting temporarily charged in the presence of a nearby charged body is called:",
+                options: [
+                    "(a) Conduction",
+                    "(b) Electrostatic induction",
+                    "(c) Friction",
+                    "(d) Dielectric polarization"
+                ],
+                answer: 1
+            },
+            {
+                q: "44. A device used to store electric charge and electrical energy is called a:",
+                options: [
+                    "(a) Resistor",
+                    "(b) Inductor",
+                    "(c) Capacitor",
+                    "(d) Transistor"
+                ],
+                answer: 2
+            },
+            {
+                q: "45. When a dielectric material is placed in an electric field, the net electric field inside the material:",
+                options: [
+                    "(a) Increases",
+                    "(b) Decreases",
+                    "(c) Remains the same",
+                    "(d) Becomes zero"
+                ],
+                answer: 1
+            },
+            {
+                q: "46. The dielectric constant $K$ of a metal (conductor) is:",
+                options: [
+                    "(a) 0",
+                    "(b) 1",
+                    "(c) -1",
+                    "(d) Infinite"
+                ],
+                answer: 3
+            },
+            {
+                q: "47. A Van de Graaff generator is used to:",
+                options: [
+                    "(a) Store charge",
+                    "(b) Generate high alternating voltage",
+                    "(c) Generate high direct voltage",
+                    "(d) Measure high resistance"
+                ],
+                answer: 2
+            },
+            {
+                q: "48. Lightning conductors are made of:",
+                options: [
+                    "(a) Insulating material",
+                    "(b) Semiconductor material",
+                    "(c) Conducting material",
+                    "(d) Dielectric material"
+                ],
+                answer: 2
+            },
+            {
+                q: "49. The process of sharing charges with the earth is called:",
+                options: [
+                    "(a) Charging",
+                    "(b) Induction",
+                    "(c) Grounding or Earthing",
+                    "(d) Polarization"
+                ],
+                answer: 2
+            },
+            {
+                q: "50. The electric field inside a charged conductor in electrostatic equilibrium is:",
+                options: [
+                    "(a) $\\sigma / \\epsilon_0$",
+                    "(b) $\\sigma / 2\\epsilon_0$",
+                    "(c) Constant, but non-zero",
+                    "(d) Zero"
+                ],
+                answer: 3
+            }
+        ];
+
+        // --- 2. DOM Elements ---
+        const startScreen = document.getElementById('start-screen');
+        const testScreen = document.getElementById('test-screen');
+        const resultsScreen = document.getElementById('results-screen');
+
+        const startBtn = document.getElementById('start-btn');
+        // submitBtn is now created dynamically, so we remove its static definition
+        const restartBtn = document.getElementById('restart-btn');
+
+        const timerEl = document.getElementById('timer');
+        const questionsContainer = document.getElementById('questions-container');
+        const scoreSummaryEl = document.getElementById('score-summary');
+        const resultsDetailsEl = document.getElementById('results-details');
+
+        // --- 3. State Variables ---
+        let timerSeconds = 3600; // 60 minutes * 60 seconds
+        let timerInterval = null;
+        let userAnswers = {}; // Stores { questionIndex: optionIndex }
+
+        // --- 4. Functions ---
+
+        /**
+         * Starts the test: Hides start, shows test, renders questions, starts timer.
+         */
+        function startTest() {
+            startScreen.style.display = 'none';
+            resultsScreen.style.display = 'none';
+            testScreen.style.display = 'block';
+            
+            // Reset state for a new test
+            userAnswers = {};
+            timerSeconds = 3600; 
+            timerEl.textContent = "60:00";
+            timerEl.classList.remove('text-red-600', 'animate-pulse');
+
+            renderQuestions();
+            startTimer();
+        }
+
+        /**
+         * Renders all questions and options into the questions container.
+         * *** MODIFIED: Also adds the submit button at the end of the container. ***
+         */
+        function renderQuestions() {
+            questionsContainer.innerHTML = ''; // Clear old questions
+            questions.forEach((q, index) => {
+                const questionBlock = document.createElement('div');
+                questionBlock.className = 'question-block mb-8 p-4 bg-gray-50 rounded-lg shadow-sm';
+
+                // Question Text
+                const questionText = document.createElement('p');
+                questionText.className = 'question-text text-lg font-semibold text-gray-800 mb-4';
+                // Use .textContent to safely render text (prevents XSS)
+                questionText.textContent = q.q;
+                questionBlock.appendChild(questionText);
+
+                // Options Group
+                const optionsGroup = document.createElement('div');
+                optionsGroup.className = 'options-group space-y-3';
+
+                q.options.forEach((option, optionIndex) => {
+                    const radioId = `q${index}_option${optionIndex}`;
+                    
+                    // The hidden actual radio button
+                    const radioInput = document.createElement('input');
+                    radioInput.type = 'radio';
+                    radioInput.id = radioId;
+                    radioInput.name = `q${index}`; // Group options by question
+                    radioInput.value = optionIndex;
+                    radioInput.className = 'hidden'; // Hide the default radio button
+                    
+                    // Store the user's answer when changed
+                    radioInput.onchange = () => {
+                        userAnswers[index] = optionIndex;
+                    };
+
+                    // The clickable, styled label
+                    const radioLabel = document.createElement('label');
+                    radioLabel.htmlFor = radioId;
+                    // Use innerHTML to correctly render special characters, but escape < and >
+                    // This is kept from the original for consistency.
+                    radioLabel.innerHTML = option.replace(/</g, "&lt;").replace(/>/g, "&gt;");
+                    radioLabel.className = 'option-label block p-3 rounded-lg border-2 border-gray-200 hover:bg-gray-100 cursor-pointer transition-all duration-200';
+                    
+                    optionsGroup.appendChild(radioInput);
+                    optionsGroup.appendChild(radioLabel);
+                });
+
+                questionBlock.appendChild(optionsGroup);
+                questionsContainer.appendChild(questionBlock);
+            });
+
+            // --- CHANGE: Add the submit button to the end of the questions container ---
+            const submitButtonContainer = document.createElement('div');
+            submitButtonContainer.className = 'mt-8'; // Add margin
+            
+            const submitButton = document.createElement('button');
+            submitButton.id = 'submit-btn'; // We can still give it an ID
+            submitButton.className = 'w-full bg-green-600 text-white font-bold py-3 px-6 rounded-lg hover:bg-green-700 transition-all duration-300 text-lg shadow-md';
+            submitButton.textContent = 'Submit Test';
+            
+            // Add the event listener directly to this new button
+            submitButton.addEventListener('click', submitTest); 
+            
+            submitButtonContainer.appendChild(submitButton);
+            questionsContainer.appendChild(submitButtonContainer);
+            // --- End of Change ---
+        }
+
+        /**
+         * Starts the countdown timer.
+         */
+        function startTimer() {
+            if (timerInterval) {
+                clearInterval(timerInterval); // Clear any old timer
+            }
+
+            timerInterval = setInterval(() => {
+                timerSeconds--;
+                timerEl.textContent = formatTimerDisplay(timerSeconds);
+
+                // Add warning class when 5 minutes are left
+                if (timerSeconds <= 300 && !timerEl.classList.contains('text-red-600')) { 
+                    timerEl.classList.add('text-red-600');
+                    timerEl.classList.add('animate-pulse');
+                }
+
+                // Auto-submit when time runs out
+                if (timerSeconds <= 0) {
+                    submitTest();
+                }
+            }, 1000); // Update every second
+        }
+
+        /**
+         * Formats total seconds into MM:SS string.
+         */
+        function formatTimerDisplay(totalSeconds) {
+            const minutes = Math.floor(totalSeconds / 60);
+            const seconds = totalSeconds % 60;
+            return `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+        }
+        
+        /**
+         * Formats total seconds into a readable string (e.g., "58m 12s").
+         */
+        function formatTimeTaken(totalSeconds) {
+            const minutes = Math.floor(totalSeconds / 60);
+            const seconds = totalSeconds % 60;
+            
+            let parts = [];
+            if (minutes > 0) parts.push(`${minutes}m`);
+            parts.push(`${seconds}s`);
+            
+            return parts.join(' ');
+        }
+
+        /**
+         * Submits the test: stops timer, calculates score, shows results.
+         */
+        function submitTest() {
+            clearInterval(timerInterval);
+            timerInterval = null;
+
+            testScreen.style.display = 'none';
+            resultsScreen.style.display = 'block';
+
+            let score = 0;
+            let correctCount = 0;
+            let incorrectCount = 0;
+            let unansweredCount = 0;
+            let resultsHTML = '';
+            const timeTaken = 3600 - timerSeconds;
+
+            questions.forEach((q, index) => {
+                const userAnswerIndex = userAnswers[index];
+                const correctAnswerIndex = q.answer;
+                const isCorrect = userAnswerIndex === correctAnswerIndex;
+
+                let statusClass = '';
+                let statusText = '';
+                let answerDetails = '';
+
+                if (userAnswerIndex === undefined) {
+                    // Unanswered
+                    unansweredCount++;
+                    statusClass = 'bg-yellow-100 border-yellow-300';
+                    statusText = '<span class="font-bold text-yellow-700">Not Answered (0)</span>';
+                    answerDetails = `<p class="text-gray-700 mt-1">Correct answer: <strong class="text-green-700">${q.options[correctAnswerIndex]}</strong></p>`;
+                } else if (isCorrect) {
+                    // Correct
+                    score += 1;
+                    correctCount++;
+                    statusClass = 'bg-green-100 border-green-300';
+                    statusText = '<span class="font-bold text-green-700">Correct (+1.00)</span>';
+                    answerDetails = `<p class="text-gray-700 mt-2">Your answer: <strong>${q.options[userAnswerIndex]}</strong></p>`;
+                } else {
+                    // Incorrect
+                    score -= 0.25;
+                    incorrectCount++;
+                    statusClass = 'bg-red-100 border-red-300';
+                    statusText = '<span class="font-bold text-red-700">Incorrect (-0.25)</span>';
+                    answerDetails = `
+                        <p class="text-gray-700 mt-2">Your answer: <strong class="text-red-700">${q.options[userAnswerIndex]}</strong></p>
+                        <p class="text-gray-700 mt-1">Correct answer: <strong class="text-green-700">${q.options[correctAnswerIndex]}</strong></p>
+                    `;
+                }
+
+                // Build the HTML for the review item
+                resultsHTML += `
+                    <div class="result-item p-4 rounded-lg border ${statusClass} shadow-sm">
+                        <div class="flex flex-col sm:flex-row justify-between sm:items-center">
+                            <p class="font-semibold text-gray-800 mb-2 sm:mb-0">${q.q}</p>
+                            <div class="flex-shrink-0">${statusText}</div>
+                        </div>
+                        ${answerDetails}
+                    </div>
+                `;
+            });
+
+            // Display Score Summary
+            const maxScore = questions.length;
+            const scorePercentage = ((score / maxScore) * 100);
+            const finalPercentage = Math.max(0, scorePercentage).toFixed(1); // Ensure percentage isn't negative
+            
+            scoreSummaryEl.innerHTML = `
+                <h2 class="text-2xl font-bold text-gray-800 mb-2">Your Final Score: ${score.toFixed(2)} / ${maxScore}</h2>
+                <p class="text-4xl font-bold ${scorePercentage >= 40 ? 'text-green-600' : 'text-red-600'} mb-3">${finalPercentage}%</p>
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-2 text-center text-lg mb-4">
+                    <div class="p-2 bg-green-50 rounded-lg">
+                        <div class="font-bold text-green-700">Correct</div>
+                        <div class="text-2xl font-bold text-green-600">${correctCount}</div>
+                    </div>
+                    <div class="p-2 bg-red-50 rounded-lg">
+                        <div class="font-bold text-red-700">Incorrect</div>
+                        <div class="text-2xl font-bold text-red-600">${incorrectCount}</div>
+                    </div>
+                    <div class="p-2 bg-yellow-50 rounded-lg">
+                        <div class="font-bold text-yellow-700">Unanswered</div>
+                        <div class="text-2xl font-bold text-yellow-600">${unansweredCount}</div>
+                    </div>
+                </div>
+                <p class="text-lg text-gray-600">Time Taken: <strong>${formatTimeTaken(3600 - timeTaken)}</strong></p>
+            `;
+
+            // Display Detailed Results
+            resultsDetailsEl.innerHTML = resultsHTML;
+        }
+        
+        /**
+         * Resets the app to the start screen.
+         */
+        function restartTest() {
+            resultsScreen.style.display = 'none';
+            testScreen.style.display = 'none';
+            startScreen.style.display = 'block';
+        }
+
+        // --- 5. Event Listeners ---
+        startBtn.addEventListener('click', startTest);
+        // submitBtn listener is now added dynamically in renderQuestions()
+        restartBtn.addEventListener('click', restartTest);
+
+    </script>
+</body>
+</html>
